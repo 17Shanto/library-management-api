@@ -25,4 +25,4 @@ const borrowSchema = new Schema<IBorrow>(
   }
 );
 
-export const Borrow = mongoose.model("Borrow", borrowSchema);
+export const Borrow = mongoose.model<IBorrow>("Borrow", borrowSchema);
