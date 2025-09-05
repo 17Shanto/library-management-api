@@ -106,8 +106,14 @@ booksRoutes.get(
   "/:bookId",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const id = req.params.bookId;
-      const book = await Book.findById(id);
+      const bookId = req.params.bookId;
+      const book = await Book.findById(bookId);
+      if (!book) {
+        const err: any = new Error("Book not found");
+        err.name = "NotFoundError";
+        err.statusCode = 404;
+        throw err;
+      }
       res.status(200).send({
         success: true,
         message: "Book retrieved successfully",
@@ -123,15 +129,44 @@ booksRoutes.patch(
   "/:bookId",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const id = req.params.bookId;
+      const bookId = req.params.bookId;
       const updatedBody = req.body;
-      const updatedBook = await Book.findByIdAndUpdate(id, updatedBody, {
+      const updatedBook = await Book.findByIdAndUpdate(bookId, updatedBody, {
         new: true,
       });
+      if (!updatedBook) {
+        const err: any = new Error("Book not found");
+        err.name = "NotFoundError";
+        err.statusCode = 404;
+        throw err;
+      }
       res.status(200).send({
         success: true,
         message: "Book updated successfully",
         data: updatedBook,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+booksRoutes.delete(
+  "/:bookId",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const bookId = req.params.bookId;
+      const deletedBook = await Book.findByIdAndDelete(bookId);
+      if (!deletedBook) {
+        const err: any = new Error("Book not found");
+        err.name = "NotFoundError";
+        err.statusCode = 404;
+        throw err;
+      }
+      res.status(200).send({
+        success: true,
+        message: "Book deleted successfully",
+        data: null,
       });
     } catch (error) {
       next(error);
