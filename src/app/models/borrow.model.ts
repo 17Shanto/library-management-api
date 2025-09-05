@@ -1,7 +1,9 @@
 import mongoose, { Schema } from "mongoose";
-import { IBorrow } from "../interfaces/borrow.interface";
+import { BorrowStaticMethod, IBorrow } from "../interfaces/borrow.interface";
+import { Book } from "./book.model";
+import { IBook } from "../interfaces/book.interface";
 
-const borrowSchema = new Schema<IBorrow>(
+const borrowSchema = new Schema<IBorrow, BorrowStaticMethod>(
   {
     book: {
       type: Schema.Types.ObjectId,
@@ -25,4 +27,22 @@ const borrowSchema = new Schema<IBorrow>(
   }
 );
 
-export const Borrow = mongoose.model<IBorrow>("Borrow", borrowSchema);
+export const Borrow = mongoose.model<IBorrow, BorrowStaticMethod>(
+  "Borrow",
+  borrowSchema
+);
+
+borrowSchema.static("isBookAvailable", async function (bookId: string) {
+  const book = await Book.findById(bookId);
+  if (book?.available) {
+    const newCopies = book.copies - 1;
+    if (newCopies === 0) {
+      await Book.findByIdAndUpdate(bookId, { copies: 0, available: false });
+    } else {
+      await Book.findByIdAndUpdate(bookId, { copies: newCopies });
+    }
+    return true;
+  } else {
+    return false;
+  }
+});
