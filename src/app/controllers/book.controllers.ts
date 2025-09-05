@@ -131,6 +131,9 @@ booksRoutes.patch(
     try {
       const bookId = req.params.bookId;
       const updatedBody = req.body;
+      if (updatedBody?.copies && updatedBody?.copies > 0) {
+        updatedBody.available = true;
+      }
       const updatedBook = await Book.findByIdAndUpdate(bookId, updatedBody, {
         new: true,
       });
