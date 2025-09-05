@@ -7,5 +7,5 @@ export interface IBorrow {
 }
 
 export interface BorrowStaticMethod extends Model<IBorrow> {
-  isBookAvailable(bookId: string): boolean;
+  isBookAvailable(bookId: string, quantity: number): boolean;
 }

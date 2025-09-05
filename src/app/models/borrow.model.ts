@@ -27,22 +27,25 @@ const borrowSchema = new Schema<IBorrow, BorrowStaticMethod>(
   }
 );
 
+borrowSchema.static(
+  "isBookAvailable",
+  async function (bookId: string, quantity: number) {
+    const book = await Book.findById(bookId);
+    if (book?.available && book?.copies - quantity >= 0) {
+      const newCopies = book.copies - quantity;
+      if (newCopies === 0) {
+        await Book.findByIdAndUpdate(bookId, { copies: 0, available: false });
+      } else {
+        await Book.findByIdAndUpdate(bookId, { copies: newCopies });
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
+);
+
 export const Borrow = mongoose.model<IBorrow, BorrowStaticMethod>(
   "Borrow",
   borrowSchema
 );
-
-borrowSchema.static("isBookAvailable", async function (bookId: string) {
-  const book = await Book.findById(bookId);
-  if (book?.available) {
-    const newCopies = book.copies - 1;
-    if (newCopies === 0) {
-      await Book.findByIdAndUpdate(bookId, { copies: 0, available: false });
-    } else {
-      await Book.findByIdAndUpdate(bookId, { copies: newCopies });
-    }
-    return true;
-  } else {
-    return false;
-  }
-});
