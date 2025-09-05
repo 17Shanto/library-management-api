@@ -118,3 +118,23 @@ booksRoutes.get(
     }
   }
 );
+
+booksRoutes.patch(
+  "/:bookId",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = req.params.bookId;
+      const updatedBody = req.body;
+      const updatedBook = await Book.findByIdAndUpdate(id, updatedBody, {
+        new: true,
+      });
+      res.status(200).send({
+        success: true,
+        message: "Book updated successfully",
+        data: updatedBook,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
