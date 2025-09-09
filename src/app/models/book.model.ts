@@ -36,6 +36,12 @@ const bookSchema = new Schema<IBook>(
   }
 );
 
+bookSchema.pre("save", async function (next) {
+  this.title = (await this.title.trim()) as string;
+  this.author = (await this.author.trim()) as string;
+  next();
+});
+
 bookSchema.post("findOneAndDelete", async function (doc, next) {
   if (doc) {
     await Borrow.deleteMany({ book: doc._id });
