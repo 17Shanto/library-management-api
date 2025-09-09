@@ -22,7 +22,6 @@ booksRoutes.post(
 booksRoutes.get(
   "/",
   async (req: Request, res: Response, next: NextFunction) => {
-    type SortOrder = "asc" | "desc";
     const ALLOWED_GENRES = [
       "FICTION",
       "NON_FICTION",
