@@ -1,7 +1,8 @@
 import express, { Request, Response } from "express";
-import { errorHandler } from "./middlewares/errorHandler";
-import { booksRoutes } from "./controllers/book.controllers";
-import { borrowRoutes } from "./controllers/borrow.controllers";
+import { booksRoutes } from "./app/controllers/book.controllers";
+import { borrowRoutes } from "./app/controllers/borrow.controllers";
+import { errorHandler } from "./app/middlewares/errorHandler";
+
 export const app = express();
 app.use(express.json());
 
