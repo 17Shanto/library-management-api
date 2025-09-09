@@ -224,9 +224,9 @@ The API will listen on [http://localhost:5000](http://localhost:5000).
 **Body**
 ```json
 {
-  "book": "66e0b8a8a6e6a3c2d5a7f9b1",
+  "book": "64ab3f9e2a4b5c6d7e8f9012",
   "quantity": 2,
-  "dueDate": "2025-09-30T00:00:00.000Z"
+  "dueDate": "2025-07-18T00:00:00.000Z"
 }
 ```
 
@@ -238,7 +238,40 @@ The API will listen on [http://localhost:5000](http://localhost:5000).
 {
   "success": true,
   "message": "Book borrowed successfully",
-  "data": { "...": "borrow document" }
+  "data": {
+    "_id": "64bc4a0f9e1c2d3f4b5a6789",
+    "book": "64ab3f9e2a4b5c6d7e8f9012",
+    "quantity": 2,
+    "dueDate": "2025-07-18T00:00:00.000Z",
+    "createdAt": "2025-06-18T07:12:15.123Z",
+    "updatedAt": "2025-06-18T07:12:15.123Z"
+  }
+}
+```
+
+#### Borrowed Books Summary (Using Aggregation)
+**GET** `/api/borrow`  
+**Response 200**
+```json
+{
+  "success": true,
+  "message": "Borrowed books summary retrieved successfully",
+  "data": [
+    {
+      "book": {
+        "title": "The Theory of Everything",
+        "isbn": "9780553380163"
+      },
+      "totalQuantity": 5
+    },
+    {
+      "book": {
+        "title": "1984",
+        "isbn": "9780451524935"
+      },
+      "totalQuantity": 3
+    }
+  ]
 }
 ```
 
@@ -276,55 +309,10 @@ All errors pass through the central handler:
 
 ---
 
-## Example cURL
-
-Create a book:
-```bash
-curl -X POST http://localhost:5000/api/books   -H "Content-Type: application/json"   -d '{
-    "title":"Clean Code",
-    "author":"Robert C. Martin",
-    "genre":"NON_FICTION",
-    "isbn":"9780132350884",
-    "description":"A handbook of agile software craftsmanship.",
-    "copies":5,
-    "available":true
-  }'
-```
-
-Borrow a book:
-```bash
-curl -X POST http://localhost:5000/api/borrow   -H "Content-Type: application/json"   -d '{
-    "book":"<book_object_id>",
-    "quantity":1,
-    "dueDate":"2025-09-30T00:00:00.000Z"
-  }'
-```
-
----
-
-## Scripts
-
-- `npm run dev` — start the server with ts-node-dev (watch mode).
-
----
-
 ## Environment & Config
 
 - `PORT` — HTTP port (default 5000).  
-- `MONGODB_URI` — MongoDB connection string.  
-
----
-
-## Notes and Tips
-
-- Keep `available` in sync with `copies` in your service layer if you expose that flag.  
-- Add request validation (e.g., zod or express-validator) for stronger checks on payloads.  
-- Add auth (JWT or session) if you plan to expose this API beyond local use.  
-- Add indexes on `isbn` and common search fields if you expect growth.  
-- Add tests for:  
-  - Borrow stock checks.  
-  - Cascade delete behavior when a book is removed.  
-  - Query params (filter, sortBy, sort, limit).  
+- `MONGODB_URL` — MongoDB connection string.  
 
 ---
 
