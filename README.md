@@ -95,7 +95,7 @@ MONGODB_URL = "mongodb+srv://<user>:<pass>@<cluster>/<db>?retryWrites=true&w=maj
 Update `src/app/server.ts` to read from env:
 ```ts
 const PORT = Number(process.env.PORT) || 5000;
-await mongoose.connect(process.env.MONGODB_URL as string);
+const MONGODB_URL = process.env.MONGODB_URL as string;
 ```
 
 *(If you prefer, you can keep the constants but you should not ship secrets.)*
